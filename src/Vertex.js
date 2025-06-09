@@ -4,9 +4,9 @@ const ArrayHelper = require('./ArrayHelper')
 const Vector2 = require('./Vector2')
 const Atom = require('./Atom')
 
-/** 
+/**
  * A class representing a vertex.
- * 
+ *
  * @property {Number} id The id of this vertex.
  * @property {Atom} value The atom associated with this vertex.
  * @property {Vector2} position The position of this vertex.
@@ -52,10 +52,10 @@ class Vertex {
 
   /**
    * Set the 2D coordinates of the vertex.
-   * 
+   *
    * @param {Number} x The x component of the coordinates.
    * @param {Number} y The y component of the coordinates.
-   * 
+   *
    */
   setPosition(x, y) {
     this.position.x = x;
@@ -64,9 +64,9 @@ class Vertex {
 
   /**
    * Set the 2D coordinates of the vertex from a Vector2.
-   * 
+   *
    * @param {Vector2} v A 2D vector.
-   * 
+   *
    */
   setPositionFromVector(v) {
     this.position.x = v.x;
@@ -136,7 +136,7 @@ class Vertex {
 
   /**
    * Set the vertex id of the parent.
-   * 
+   *
    * @param {Number} parentVertexId The parents vertex id.
    */
   setParentVertexId(parentVertexId) {
@@ -253,7 +253,7 @@ class Vertex {
       return 'down';
     } else if (textAngle === -2) {
       return 'up';
-    } else if (textAngle === 0 || textAngle === -0) {
+    } else if (textAngle === 0 || Object.is(x, -0)) {
       return 'right'; // is checking for -0 necessary?
     } else if (textAngle === 3 || textAngle === -3) {
       return 'left';
@@ -286,7 +286,7 @@ class Vertex {
 
   /**
    * Returns an array of ids of neighbouring vertices that will be drawn (vertex.value.isDrawn === true).
-   * 
+   *
    * @param {Vertex[]} vertices An array containing the vertices associated with the current molecule.
    * @returns {Number[]} An array containing the ids of neighbouring vertices that will be drawn.
    */
