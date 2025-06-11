@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: RingConnection.js</title>
+
+    <script src="scripts/prismjs/prism.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prism_solarized.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: RingConnection.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>//@ts-check
+const Vertex = require('./Vertex')
+const Ring = require('./Ring')
+
+/** 
+ * A class representing a ring connection.
+ * 
+ * @property {Number} id The id of this ring connection.
+ * @property {Number} firstRingId A ring id.
+ * @property {Number} secondRingId A ring id.
+ * @property {Set&lt;Number>} vertices A set containing the vertex ids participating in the ring connection.
+ */
+class RingConnection {
+    /**
+     * The constructor for the class RingConnection.
+     *
+     * @param {Ring} firstRing A ring.
+     * @param {Ring} secondRing A ring.
+     */
+    constructor(firstRing, secondRing) {
+        this.id = null;
+        this.firstRingId = firstRing.id;
+        this.secondRingId = secondRing.id;
+        this.vertices = new Set();
+
+        for (var m = 0; m &lt; firstRing.members.length; m++) {
+            let c = firstRing.members[m];
+
+            for (let n = 0; n &lt; secondRing.members.length; n++) {
+                let d = secondRing.members[n];
+
+                if (c === d) {
+                    this.addVertex(c);
+                }
+            }
+        }
+    }
+
+    /**
+     * Adding a vertex to the ring connection.
+     *
+     * @param {Number} vertexId A vertex id.
+     */
+    addVertex(vertexId) {
+        this.vertices.add(vertexId);
+    }
+
+    /**
+     * Update the ring id of this ring connection that is not the ring id supplied as the second argument.
+     *
+     * @param {Number} ringId A ring id. The new ring id to be set.
+     * @param {Number} otherRingId A ring id. The id that is NOT to be updated.
+     */
+    updateOther(ringId, otherRingId) {
+        if (this.firstRingId === otherRingId) {
+            this.secondRingId = ringId;
+        } else {
+            this.firstRingId = ringId;
+        }
+    }
+
+    /**
+     * Returns a boolean indicating whether or not a ring with a given id is participating in this ring connection.
+     * 
+     * @param {Number} ringId A ring id.
+     * @returns {Boolean} A boolean indicating whether or not a ring with a given id participates in this ring connection.
+     */
+    containsRing(ringId) {
+        return this.firstRingId === ringId || this.secondRingId === ringId;
+    }
+
+    /**
+     * Checks whether or not this ring connection is a bridge in a bridged ring.
+     *
+     * @param {Vertex[]} vertices The array of vertices associated with the current molecule.
+     * @returns {Boolean} A boolean indicating whether or not this ring connection is a bridge.
+     */
+    isBridge(vertices) {
+      if (this.vertices.size > 2) {
+          return true;
+      }
+
+      for (let vertexId of this.vertices) {
+          if(vertices[vertexId].value.rings.length > 2) {
+              return true;
+          }
+      }
+
+      return false;
+    }
+
+    /**
+     * Checks whether or not two rings are connected by a bridged bond.
+     *
+     * @static
+     * @param {RingConnection[]} ringConnections An array of ring connections containing the ring connections associated with the current molecule.
+     * @param {Vertex[]} vertices An array of vertices containing the vertices associated with the current molecule.
+     * @param {Number} firstRingId A ring id.
+     * @param {Number} secondRingId A ring id.
+     * @returns {Boolean} A boolean indicating whether or not two rings ar connected by a bridged bond.
+     */
+    static isBridge(ringConnections, vertices, firstRingId, secondRingId) {
+      let ringConnection = null;
+      
+      for (let i = 0; i &lt; ringConnections.length; i++) {
+          ringConnection = ringConnections[i];
+
+          if (ringConnection.firstRingId === firstRingId &amp;&amp; ringConnection.secondRingId === secondRingId ||
+              ringConnection.firstRingId === secondRingId &amp;&amp; ringConnection.secondRingId === firstRingId) {
+              return ringConnection.isBridge(vertices);
+          }
+      }
+
+      return false;
+    }
+
+    /**
+     * Retruns the neighbouring rings of a given ring.
+     *
+     * @static
+     * @param {RingConnection[]} ringConnections An array of ring connections containing ring connections associated with the current molecule.
+     * @param {Number} ringId A ring id.
+     * @returns {Number[]} An array of ring ids of neighbouring rings.
+     */
+    static getNeighbours(ringConnections, ringId) {
+        let neighbours = [];
+
+        for (let i = 0; i &lt; ringConnections.length; i++) {
+            let ringConnection = ringConnections[i];
+            
+            if (ringConnection.firstRingId === ringId) {
+                neighbours.push(ringConnection.secondRingId);
+            } else if (ringConnection.secondRingId === ringId) {
+                neighbours.push(ringConnection.firstRingId);
+            }
+        }
+
+        return neighbours;
+    }
+
+    /**
+     * Returns an array of vertex ids associated with a given ring connection.
+     *
+     * @static
+     * @param {RingConnection[]} ringConnections An array of ring connections containing ring connections associated with the current molecule.
+     * @param {Number} firstRingId A ring id.
+     * @param {Number} secondRingId A ring id.
+     * @returns {Number[]} An array of vertex ids associated with the ring connection.
+     */
+    static getVertices(ringConnections, firstRingId, secondRingId) {
+        for (let i = 0; i &lt; ringConnections.length; i++) {
+            let ringConnection = ringConnections[i];
+            if (ringConnection.firstRingId === firstRingId &amp;&amp; ringConnection.secondRingId === secondRingId ||
+                ringConnection.firstRingId === secondRingId &amp;&amp; ringConnection.secondRingId === firstRingId) {
+                return [...ringConnection.vertices];
+            }
+        }
+    }
+}
+
+module.exports = RingConnection</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ArrayHelper.html">ArrayHelper</a></li><li><a href="Atom.html">Atom</a></li><li><a href="CanvasWrapper.html">CanvasWrapper</a></li><li><a href="Drawer.html">Drawer</a></li><li><a href="DrawerBase.html">DrawerBase</a></li><li><a href="Edge.html">Edge</a></li><li><a href="GaussDrawer.html">GaussDrawer</a></li><li><a href="Graph.html">Graph</a></li><li><a href="Line.html">Line</a></li><li><a href="MathHelper.html">MathHelper</a></li><li><a href="Reaction.html">Reaction</a></li><li><a href="ReactionDrawer.html">ReactionDrawer</a></li><li><a href="Ring.html">Ring</a></li><li><a href="RingConnection.html">RingConnection</a></li><li><a href="SSSR.html">SSSR</a></li><li><a href="Vector2.html">Vector2</a></li><li><a href="Vertex.html">Vertex</a></li></ul><h3>Global</h3><ul><li><a href="global.html#getChargeText">getChargeText</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Wed Jun 11 2025 15:20:19 GMT+0100 (British Summer Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
