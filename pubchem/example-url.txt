@@ -1,0 +1,1 @@
+https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/fructose/property/MolecularFormula,MolecularWeight,SMILES/XML
