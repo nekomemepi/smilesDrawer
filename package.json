@@ -9,7 +9,8 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "build": "node esbuild.config.js"
+    "build": "node esbuild.config.js",
+    "jsdoc": "jsdoc --template ./jsdoc/templates/prismjs -c jsdoc.json"
   },
   "devDependencies": {
     "esbuild": "0.25.5",
