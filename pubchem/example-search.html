@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Simple smilesDrawer Molecule Viewer</title>
+  <script src="https://unpkg.com/smiles-drawer@2.0.1/dist/smiles-drawer.min.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    #canvas {
+      border: 1px solid #ccc;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Simple smilesDrawer Molecule Viewer</h1>
+  <input type="text" id="moleculeInput" placeholder="Enter molecule name (e.g., aspirin)">
+  <button onclick="fetchAndDraw()">Draw Molecule</button>
+  <p id="status"></p>
+  <canvas id="canvas" width="500" height="400"></canvas>
+
+  <script>
+    async function fetchAndDraw() {
+      const molecule = document.getElementById('moleculeInput').value.trim();
+      const status = document.getElementById('status');
+      const canvas = document.getElementById('canvas');
+      const url = `https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/${encodeURIComponent(molecule)}/property/MolecularFormula,SMILES/XML`;
+
+      status.textContent = 'Fetching data...';
+
+      try {
+        const response = await fetch(url);
+        const xmlText = await response.text();
+        const parser = new DOMParser();
+        const xmlDoc = parser.parseFromString(xmlText, "application/xml");
+        const smiles = xmlDoc.querySelector("SMILES").textContent;
+
+        status.textContent = `SMILES: ${smiles}`;
+
+        const drawer = new SmilesDrawer.Drawer({ width: 500, height: 300 });
+        SmilesDrawer.parse(smiles, tree => {
+          drawer.draw(tree, 'canvas', 'light', false);
+        }, err => {
+          status.textContent = 'Error parsing SMILES: ' + err;
+        });
+      } catch (error) {
+        status.textContent = 'Error fetching data: ' + error;
+      }
+    }
+  </script>
+</body>
+</html>
