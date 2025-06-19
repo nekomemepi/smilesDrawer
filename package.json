@@ -9,10 +9,12 @@
   "license": "MIT",
   "private": false,
   "scripts": {
-    "build": "node esbuild.config.js"
+    "build": "node esbuild.config.js",
+    "jsdoc": "jsdoc --template ./jsdoc/templates/prismjs -c jsdoc.json"
   },
   "devDependencies": {
-    "esbuild": "^0.25.5"
+    "esbuild": "^0.25.5",
+    "jsdoc": "^4.0.0"
   },
   "dependencies": {
     "chroma-js": "^2.4.2",
