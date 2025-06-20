@@ -1,10 +1,39 @@
 ## Fork of Daniel Daniel Probst's repo primarily to fix dependency issues but not actively maintain it.
 
+### This is version 2.1.11, tested using [Markor](https://github.com/gsantner/markor) by Gregor Santner.
+
+**Odd minor numbers should be considered working but unstable**
+
+### Installation
+
+The original SmilesDrawer is available from the unpkg content delivery network:
+
+```
+https://unpkg.com/smiles-drawer@1.2.0/dist/smiles-drawer.min.js
+```
+
+You can also get the original smilesDrawer using yarn:
+
+```
+yarn add smiles-drawer
+```
+
+### Building and using _this_ smilesDrawer
+
+If you decide not to use the ready-to-go scripts in `dist`, you can clone this version, then (edit and) build the project by running:
+
+```bash
+# clone this project
+cd smilesDrawer
+npm i
+npm run build
+# to rebuild the documentation 
+npm run jsdoc
+```
+
 # SmilesDrawer 2.0
 
 No server, no images, no templates, just a SMILES 😊
-
-Current Version: **2.1.10**
 
 <table style="width: 100%; table-layout: fixed">
     <tbody>
@@ -97,31 +126,6 @@ A very simple JSFiddle example can be found [here](https://jsfiddle.net/zjdtkL57
 ### Experimental Features
 
 If you experience problems with the drawing of complex ring systems (including very long bonds), please enable experimental features (see options).
-
-### "Installation"
-
-SmilesDrawer is available from the unpkg content delivery network:
-
-```
-https://unpkg.com/smiles-drawer@1.2.0/dist/smiles-drawer.min.js
-```
-
-You can easily get smiles-drawer using yarn:
-
-```
-yarn add smiles-drawer
-```
-
-or you can just download the files from here.
-
-### Building Smiles Drawer
-
-If you decide not to use the ready-to-go scripts in `dist`, you can (edit and) build the project by running:
-
-```bash
-npm install
-gulp
-```
 
 ### Getting Started
 
