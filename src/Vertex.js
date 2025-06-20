@@ -253,7 +253,7 @@ class Vertex {
       return 'down';
     } else if (textAngle === -2) {
       return 'up';
-    } else if (textAngle === 0 || Object.is(x, -0)) {
+    } else if (textAngle === 0 || Object.is(textAngle, -0)) {
       return 'right'; // is checking for -0 necessary?
     } else if (textAngle === 3 || textAngle === -3) {
       return 'left';
